@@ -1,4 +1,17 @@
-#What symptoms you observed
+# Challenge 1: Deploy the Cluster
+Deploy the Terraform stack in the terraform/ directory to create a KIND cluster on your local machine.
+
+The Terraform code has issues that will prevent a successful deployment. Debug and fix them to get the cluster running.
+
+After deployment you should have:
+
+A 4-node KIND cluster (1 control-plane + 3 workers)
+kubectl access via context kind-sanjay-challenge
+Verify: kubectl --context kind-sanjay-challenge get nodes
+
+Hint: Start with terraform init and work through the errors one at a time. There are multiple issues across different Terraform concepts.
+
+# What symptoms you observed
 1.  Invalid value for "path" parameter: no file exists at "./../kubernetes/cluster-config.yaml"; this function works only with files that are distributed as part of the configuration source code, so if this file
 │ will be created by a resource in this configuration you must instead obtain this result from an attribute of that resource.
 2. │ Error: Reference to undeclared input variable
@@ -13,7 +26,7 @@
 
 terraform plan run to get how terraform will create resource 
 
-#What the root cause was and how you confirmed it
+# What the root cause was and how you confirmed it
 
 Invalid value for "path" parameter: no file exists at "./../kubernetes/cluster-config.yaml";
 
@@ -26,10 +39,10 @@ variable name is not same as passed in main.tf " │   on main.tf line 42, in re
 
 
 
-#What you did to fix it
+# What you did to fix it
 Updated the file name and kube_config_path variable name as created with kind_config_path
 
-#How you verified the fix
+# How you verified the fix
 
 Terraform plan work smoothly
 Terraform apply command works fine
