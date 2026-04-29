@@ -1,4 +1,4 @@
-Challenge 2: Fix the Broken Deployment
+# Challenge 2: Fix the Broken Deployment
 In namespace t2, the deployment task-2 wants 3 healthy replicas but all pods are failing.
 
 Goal: Get all 3 replicas of task-2 running and ready.
@@ -6,18 +6,18 @@ Goal: Get all 3 replicas of task-2 running and ready.
 Hint: There are multiple issues. The first fix won't be the last.
 
 
-What symptoms you observed
+# What symptoms you observed
 1. Initially 2 pods are in pending state.
 2. Pod have wrong tag for image " ImagePullBackOff= Failed to pull image "nginx:1.19-alpne": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/nginx:1.19-alpne": failed to resolve reference "docker.io/library/nginx:1.19-alpne": docker.io/library/nginx:1.19-alpne: not found"
 3. All 3 replicas not available as mentioned in deployment replicas
 
-What tools you used to investigate
+# What tools you used to investigate
 1. Kubectl describe pod/$pod_name
 2. Kubectl describe pod/$pod_name events showing reason with error
 3. kubectl get deploy -n t2
    NAME     READY   UP-TO-DATE   AVAILABLE   AGE
    task-2   0/3     2            0           24m
-What the root cause was and how you confirmed it
+# What the root cause was and how you confirmed it
 1. Pod have key with node selector which is not available in existing node selector
   nodeSelector:
     disk: ssd
@@ -40,12 +40,12 @@ Error response from daemon: failed to resolve reference "docker.io/library/nginx
 => kubectl get quota -n t2
 NAME          AGE   REQUEST                                   LIMIT
 tight-quota   26m   pods: 2/2, requests.memory: 128Mi/150Mi
-What you did to fix it
+# What you did to fix it
 1. we can update the deployment with node selector or we can add the label in node level. As of now add label to node.
    kubectl label node sanjay-challenge-worker disk=ssd 
 2. Incorrect name of tag it should be docker.io/library/nginx:1.19-alpine
 3. Updated the quote hard pod and memory size
-How you verified the fix
+# How you verified the fix
 1. all pods are up and running
  kubectl get pod -n t2
 NAME                      READY   STATUS    RESTARTS   AGE
