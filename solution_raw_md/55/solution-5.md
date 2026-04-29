@@ -1,4 +1,4 @@
-Challenge 5: TLS Certificate Debugging
+# Challenge 5: TLS Certificate Debugging
 In namespace t5, there is a deployment secure-app running nginx configured for HTTPS on port 443, and a pod tls-client with curl installed.
 
 A CA bundle is mounted at /etc/ssl/custom/ca.crt inside the tls-client pod.
@@ -10,7 +10,7 @@ It must return: TLS Challenge Complete!
 
 Hint: There are multiple certificate-related issues. The server may not even start initially.
 
-What symptoms you observed
+# What symptoms you observed
 1. Secure app is not up and running to provide the result
 
  kubectl exec tls-client -n t5 -- curl --cacert /etc/ssl/custom/ca.crt https://secure-app.t5.svc.cluster.local
@@ -24,7 +24,7 @@ NAME                         READY   STATUS             RESTARTS         AGE
 secure-app-d5d56dc59-5vzmh   0/1     CrashLoopBackOff   17 (3m27s ago)   68m
 tls-client                   1/1     Running            0                68m
 
-What tools you used to investigate
+# What tools you used to investigate
 
 kubectl log to get the issue
  kubectl log secure-app-d5d56dc59-5vzmh -n t5
@@ -44,13 +44,13 @@ root@Bhupender:~/devops-hiring-assignment/terraform# kubectl logs secure-app-d5d
 2026/04/28 11:36:45 [emerg] 1#1: cannot load certificate "/etc/nginx/ssl/tls.crt": PEM_read_bio_X509_AUX() failed (SSL: error:0909006C:PEM routines:get_name:no start line:Expecting: TRUSTED CERTIFICATE)
 nginx: [emerg] cannot load certificate "/etc/nginx/ssl/tls.crt": PEM_read_bio_X509_AUX() failed (SSL: error:0909006C:PEM routines:get_name:no start line:Expecting: TRUSTED CERTIFICATE)
 
-What the root cause was and how you confirmed it
+# What the root cause was and how you confirmed it
  kubectl get secret tls-secret -n t5 -o jsonpath='{.data.tls\.crt}' | base64 -d
 -----BEGIN PRIVATE KEY-----
-What you did to fix it
+# What you did to fix it
 crt and keye are swapped now re-swapped to create the right secret
 also updated the configmap ca bundle with original ca crt text file
-How you verified the fix
+# How you verified the fix
 kubectl exec tls-client -n t5 -- curl --cacert /etc/ssl/custom/ca.crt https://secure-app.t5.svc.cluster.local
   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
                                  Dload  Upload  Total   Spent   Left   Speed
