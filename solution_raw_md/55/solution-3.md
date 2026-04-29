@@ -1,4 +1,4 @@
-In namespace t3, there is a deployment task-3 running a standard nginx server with a service exposing port 80.
+# In namespace t3, there is a deployment task-3 running a standard nginx server with a service exposing port 80.
 
 In the default namespace, a pod debug-client (with full networking tools) has been deployed.
 
@@ -10,7 +10,7 @@ It should return the nginx welcome page.
 Hint: There are multiple layers blocking connectivity. The obvious one isn't the only one.\
 
 
-What symptoms you observed
+# What symptoms you observed
 Pod not able to resolve the DNS
 kubectl describe svc -n t3
 Name:                     task-3
@@ -35,26 +35,26 @@ debug-client   1/1     Running   0          33m
 root@Bhupender:~/devops-hiring-assignment/terraform# kubectl exec -it debug-client -- sh
 ~ # curl http://task-3.t3.svc.cluster.local
 curl: (6) Could not resolve host: task-3.t3.svc.cluster.local (Domain name not found)
-What tools you used to investigate
+# What tools you used to investigate
 execute into the pod and try to curl the command
 
-What the root cause was and how you confirmed it
+# What the root cause was and how you confirmed it
 Issue with Kubernetes networking as checked it only not working for this specific
 Need to check the coredns  pod no issue in it
 Need to check the coredns  config
 }
         ready
-        rewrite name task-3.t3.svc.cluster.local task-3.t3.svc.cluster.invalid issue
+        # rewrite name task-3.t3.svc.cluster.local task-3.t3.svc.cluster.invalid issue
         kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
 
-What you did to fix it
+# What you did to fix it
 remove the blocking re-write line form configmap
 
-How you verified the fix
+# How you verified the fix
 kubectl exec -it debug-client -- sh
 ~ # curl http://task-3.t3.svc.cluster.local
 <!DOCTYPE html>
